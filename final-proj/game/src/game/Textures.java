@@ -5,9 +5,9 @@
 package game;
 
 import java.io.IOException;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
+//import org.lwjgl.LWJGLException;
+//import org.lwjgl.opengl.Display;
+//import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.opengl.Texture;
@@ -22,6 +22,7 @@ public class Textures {
 	public static Texture hatsune;
 	public static Texture sky;
 	public static Texture bee;
+	public static Texture grass;
  
 	/**
 	 * Start the example
@@ -88,6 +89,8 @@ public class Textures {
 		try {
 			sky = load("sky.png", "PNG");
 			bee = load("bee_and_puppycat.png", "PNG");
+			hatsune = load("trans_rights.png", "PNG");
+			grass = load("grass.png", "PNG");
 		}
 		catch(IOException e) {
 			System.out.println("Error in loading");
@@ -98,6 +101,28 @@ public class Textures {
 	/**
 	 * draw a quad with the image on it
 	 */
+	
+	public static void render(Texture texture, int x, int y, int w, int h) {
+		Color.white.bind();
+		texture.bind(); // or GL11.glBind(texture.getTextureID());
+ 
+		GL11.glBegin(GL11.GL_QUADS);
+			GL11.glTexCoord2f(0,0);
+			GL11.glVertex2f(x, y);
+//			System.out.println("First vertex: " + x + " " + y);
+			GL11.glTexCoord2f(1,0);
+			GL11.glVertex2f(x + w,y);
+//			System.out.println("Second vertex: " + (x + w) + " " + y);
+			GL11.glTexCoord2f(1,1);
+			GL11.glVertex2f(x + w, y + h);
+//			System.out.println("Third vertex: " + (x + w) + " " + (y + h));
+			GL11.glTexCoord2f(0,1);
+			GL11.glVertex2f(x, y + h);
+//			System.out.println("Fourth vertex: " + x + " " + (y + h));
+			//System.out.println(texture.getTextureWidth() + " " + texture.getTextureWidth());
+		GL11.glEnd();
+	}
+	
 	public static void render(Texture texture, int x, int y) {
 		Color.white.bind();
 		texture.bind(); // or GL11.glBind(texture.getTextureID());
@@ -106,7 +131,7 @@ public class Textures {
 			GL11.glTexCoord2f(0,0);
 			GL11.glVertex2f(x, y);
 			GL11.glTexCoord2f(1,0);
-			GL11.glVertex2f(x + texture.getTextureWidth(),0);
+			GL11.glVertex2f(x + texture.getTextureWidth(),y);
 			GL11.glTexCoord2f(1,1);
 			GL11.glVertex2f(x + texture.getTextureWidth(), y + texture.getTextureHeight());
 			GL11.glTexCoord2f(0,1);

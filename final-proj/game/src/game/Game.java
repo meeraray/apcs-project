@@ -1,10 +1,16 @@
 package game;
 
+import game.game_objects.Block;
+import game.game_objects.Entity;
+import game.game_objects.VisibleObject;
+
+import java.util.ArrayList;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
+
 
 public class Game {
 	
@@ -26,16 +32,58 @@ public class Game {
         
 //        Textures.render(Textures.hatsune);
         
-        int x = 0;
+        Entity b = new Entity(0, 0);
+        Block b2 = new Block(0, 256);
         while (!Display.isCloseRequested()) {
         	Textures.render(Textures.sky);
         	if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-				x++;
+				b.xVelocity = Constants.MOVE_VELOCITY;
 			}
-        	if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-				x--;
+        	else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
+				b.xVelocity = -1 * Constants.MOVE_VELOCITY;
 			}
-        	Textures.render(Textures.bee, x, 0);
+        	else {
+        		b.xVelocity = 0;
+        	}
+        	if(Keyboard.isKeyDown(Keyboard.KEY_S)){
+        		b.yVelocity = 1;
+        	}
+        	else if(Keyboard.isKeyDown(Keyboard.KEY_W)) {
+        		b.yVelocity = -1;
+        	}
+        	else {
+        		b.yVelocity = 0;
+        	}
+        	if (Keyboard.isKeyDown(Keyboard.KEY_L)) {
+				b2.xVelocity = Constants.MOVE_VELOCITY;
+			}
+        	else if (Keyboard.isKeyDown(Keyboard.KEY_J)) {
+				b2.xVelocity = -1 * Constants.MOVE_VELOCITY;
+			}
+        	else {
+        		b2.xVelocity = 0;
+        	}
+        	if(Keyboard.isKeyDown(Keyboard.KEY_K)){
+        		b2.yVelocity = 1;
+        	}
+        	else if(Keyboard.isKeyDown(Keyboard.KEY_I)) {
+        		b2.yVelocity = -1;
+        	}
+        	else {
+        		b2.yVelocity = 0;
+        	}
+        	
+        	b.update();
+        	b2.update();
+//        	if(b.isColliding(b2)) {
+//        		System.out.println("colliding");
+//        	}
+//        	if(b.onTopOf(b2)) {
+//        		System.out.println("on top of");
+//        	}
+        	ArrayList<VisibleObject> arr = new ArrayList<VisibleObject>();
+        	arr.add((VisibleObject) b2);
+        	b.collideStop(arr);
             Display.update();
             Display.sync(100);
         }
