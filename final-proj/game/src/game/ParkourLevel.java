@@ -34,8 +34,8 @@ public class ParkourLevel extends Level {
 			blocks.add(b);
 			collidables.add(b);
 		}
-		player.x = (int) (13.5 * 64);
-		player.y = (int) (-1 * -64 + baseLevel - player.height);
+//		player.x = (int) (13.5 * 64);
+//		player.y = (int) (-1 * -64 + baseLevel - player.height);
 		BlockEndPortal endportal = new BlockEndPortal(Constants.GAME_WIDTH - 64, (int) (-0.71 * -64 + baseLevel - 128));
 		imgs.add(endportal);
 		blocks.add(endportal);
