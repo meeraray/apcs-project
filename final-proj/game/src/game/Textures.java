@@ -23,6 +23,12 @@ public class Textures {
 	public static Texture sky;
 	public static Texture bee;
 	public static Texture grass;
+	public static Texture player;
+	public static Texture lava;
+	public static Texture nether_background;
+	public static Texture netherrack;
+	public static Texture portal;
+	public static Texture endportal;
  
 	/**
 	 * Start the example
@@ -91,6 +97,12 @@ public class Textures {
 			bee = load("bee_and_puppycat.png", "PNG");
 			hatsune = load("trans_rights.png", "PNG");
 			grass = load("grass.png", "PNG");
+			player = load("steve.png", "PNG");
+			lava = load("lava_still.png", "PNG");
+			nether_background = load("nether_background.png", "PNG");
+			netherrack = load("netherrack.png", "PNG");
+			portal = load("portal.png", "PNG");
+			endportal = load("portal2.png", "PNG");
 		}
 		catch(IOException e) {
 			System.out.println("Error in loading");
@@ -141,15 +153,5 @@ public class Textures {
 	
 	public static void render(Texture texture) {
 		render(texture, 0, 0);
-	}
-	
-	
- 
-	/**
-	 * Main Class
-	 */
-	public static void main(String[] argv) {
-//		Textures textureExample = new Textures();
-//		textureExample.start();
 	}
 }

@@ -1,8 +1,8 @@
 package game;
 
-import game.game_objects.Block;
 import game.game_objects.Entity;
 import game.game_objects.VisibleObject;
+import game.game_objects.blocks.Block;
 
 import java.util.ArrayList;
 

@@ -1,115 +1,74 @@
 package game;
 
-import game.game_objects.Block;
-import game.game_objects.BlockGrass;
-import game.game_objects.Entity;
-import game.game_objects.VisibleObject;
-
 import java.util.ArrayList;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Keyboard;
+import game.game_objects.VisibleObject;
+import game.game_objects.blocks.*;
+
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
 
 
-public class ParkourLevel {
-	
-	public static ArrayList<VisibleObject> imgs = new ArrayList<VisibleObject>();
-	public static ArrayList<Block> blocks = new ArrayList<Block>();
-	public static ArrayList<VisibleObject> collidables = new ArrayList<VisibleObject>();
-	
-	public static void setup() {
-		try {
-            Display.setDisplayMode(new DisplayMode(Constants.GAME_WIDTH, Constants.GAME_HEIGHT));
-            Display.setTitle("2D Craft"); 
-            Display.create();
-        } catch (LWJGLException e) {
-            System.err.println("Display wasn't initialized correctly.");
-            System.exit(1);
-        }
-        
-        Textures.initGL(Constants.GAME_WIDTH, Constants.GAME_HEIGHT);
-        Textures.init(); 
-	}
+public class ParkourLevel extends Level {
 	
 	public static void levelOneSetup() {
+		player.x = 0;
+		player.y = Game.HEIGHT / 2 - player.height - 64;
 		for(int i = 0; i < Constants.GAME_WIDTH; i += new Block().width) {
-			BlockGrass floor = new BlockGrass(i, Game.HEIGHT - new Block().height);
+			BlockLava floor = new BlockLava(i, Game.HEIGHT - new Block().height);
 			imgs.add(floor);
 			blocks.add(floor);
 			collidables.add(floor);
 		}
-		Block hats = new BlockGrass(200, Game.HEIGHT - 128);
-		Block test = new BlockGrass(200, Game.HEIGHT - 400);
-		imgs.add(test);
-		blocks.add(test);
-		collidables.add(test);
-		imgs.add(hats);
-		blocks.add(hats);
-		collidables.add(hats);
+		BlockPortal portal = new BlockPortal(0, Constants.GAME_HEIGHT / 2 - 128 - 64);
+		imgs.add(portal);
+		blocks.add(portal);
+		//collidables.add(portal);
+		
+		double[] obstacleXYCoords = new double[]{0, 0, 1, 0, 2, 1, 4, 1, 5, -1, 7, -1, 8, 0, 10, 1, 12.5, -1, 13.5, -1, 14.5, 0.29,
+				15.5, -0.71, 16.5, -0.71, 17.5, -0.71, 18.5, -0.71};
+		int baseLevel = Game.HEIGHT / 2 - 64;
+		for(int i = 0; i < obstacleXYCoords.length; i += 2) {
+			BlockNether b = new BlockNether((int) (obstacleXYCoords[i] * 64), (int) (obstacleXYCoords[i + 1] * -64 + baseLevel));
+			imgs.add(b);
+			blocks.add(b);
+			collidables.add(b);
+		}
+		player.x = (int) (13.5 * 64);
+		player.y = (int) (-1 * -64 + baseLevel - player.height);
+		BlockEndPortal endportal = new BlockEndPortal(Constants.GAME_WIDTH - 64, (int) (-0.71 * -64 + baseLevel - 128));
+		imgs.add(endportal);
+		blocks.add(endportal);
+		imgs.add(player);
+		
 	}
+	
 	public static void main(String[] args) {
        
 		setup();
-		levelOneSetup();
-//        Textures.render(Textures.hatsune);
+		levelOneSetup();   
         
-        Block bl = new BlockGrass(0, Constants.GAME_HEIGHT - 64);
-        Entity b = new Entity(0, 0);
         while (!Display.isCloseRequested()) {
-        	Textures.render(Textures.sky);
-        	if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-				b.xVelocity = Constants.MOVE_VELOCITY;
-			}
-        	else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-				b.xVelocity = -1 * Constants.MOVE_VELOCITY;
-			}
-        	else {
-        		b.xVelocity = 0;
-        	}
+        	Textures.render(Textures.nether_background);
         	
-        	if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-        		System.out.println("jump");
-        		for(Block block : blocks) {
-        			if(b.onTopOf(block)) {
-            			b.jump();
-            			break;
-            		}
+        	playerMoveHandling();
+        	
+        	player.yVelocity += Constants.GRAVITY;
+
+        	player.collideStop(collidables);
+        	
+        	for(Block b : blocks) {
+        		if(b instanceof BlockLava && player.isColliding(b)) {
+        				player.x = 0;
+        				player.y = Game.HEIGHT / 2 - player.height - 64;
+        				break;
         		}
-        		
+        		if(b instanceof BlockEndPortal && player.isColliding(b)) {
+        			gameOver = true;
+        		}
         	}
-        	
-//        	if(b.yVelocity > 0) {
-//        		for(Block block : blocks) {
-//            		if(b.isColliding(block) || b.onTopOf(block)) {
-//            			System.out.println("on top of");
-//            			b.falling = false;
-//                		b.y = bl.y - b.height;
-//                		b.yVelocity = 0;
-//                		break;
-//            		}
-//            	}
-        		//System.out.println(b.y + " " + bl.y);
-//        	}
-//        	if(b.onTopOf(bl)) {
-//        		System.out.println("on top of");
-//        		b.falling = false;
-//        		b.y = bl.y - b.height;
-//        		System.out.println(b.y + " " + bl.y);
-//        	}
-//        	else {
-//        		b.falling = true;
-//        	}
-        	b.yVelocity += Constants.GRAVITY;
-//        	Block test = blocks.get(blocks.size() - 1);
-//        	System.out.println(test.y + " " + b.y);
-//        	System.out.println("vel = " + b.xVelocity);
-        	b.collideStop(collidables);
-        	//b.backOff(blocks.get(blocks.size() - 1));
-        	b.update();
-        	bl.update();
+
+        	player.update();
         	
         	System.out.println(Mouse.getX() + " " + Mouse.getY());
         	
@@ -117,9 +76,11 @@ public class ParkourLevel {
         		o.render();
         	}
         	
-        	
+        	if(gameOver) {
+        		Textures.render(Textures.sky);
+        	}
             Display.update();
-            Display.sync(100);
+            Display.sync(60);
         }
  
         Display.destroy();

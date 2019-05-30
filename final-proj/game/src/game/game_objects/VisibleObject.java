@@ -18,7 +18,7 @@ public abstract class VisibleObject {
 	public void update() {
 		x += xVelocity;
 		y += yVelocity;
-		render();
+//		render();
 	}
 	
 	public boolean isColliding(VisibleObject other) {
