@@ -9,7 +9,6 @@ public abstract class VisibleObject {
 	public int xVelocity;
 	public double yVelocity;
 	
-	
 	public int width;
 	public int height;
 	

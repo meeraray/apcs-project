@@ -5,6 +5,7 @@
 package game;
 
 import java.io.IOException;
+import utilities.*;
 //import org.lwjgl.LWJGLException;
 //import org.lwjgl.opengl.Display;
 //import org.lwjgl.opengl.DisplayMode;
@@ -19,12 +20,27 @@ public class Textures {
 	public static String IMAGE1 = "trans_rights.png";
  
 	/** The texture that will hold the image details */
+	
 	public static Texture hatsune;
 	public static Texture sky;
 	public static Texture bee;
 	public static Texture grass;
-	public static Texture player;
-	public static Texture lava;
+	
+	private static String[] playerWLNames = { "steve/steve_WL_0.png","steve/steve_WL_1.png","steve/steve_WL_2.png","steve/steve_WL_3.png","steve/steve_WL_4.png" };
+	public static Texture[] playerWLFrames;	
+	
+	private static String[] playerWRNames = { "steve/steve_WR_0.png","steve/steve_WR_1.png","steve/steve_WR_2.png","steve/steve_WR_3.png","steve/steve_WR_4.png" };
+	public static Texture[] playerWRFrames;
+	
+	private static String[] playerJNames = { "steve/steve_J_0.png","steve/steve_J_1.png","steve/steve_J_2.png","steve/steve_J_3.png","steve/steve_J_4.png" };
+	public static Texture[] playerJFrames;
+	
+	private static String[] playerFNames = { "steve/steve_F_0.png","steve/steve_F_1.png","steve/steve_F_2.png","steve/steve_F_3.png","steve/steve_F_4.png" };
+	public static Texture[] playerFFrames;
+	
+	private static String[] lavaNames = { "lava/lava_still_0.png","lava/lava_still_1.png","lava/lava_still_2.png","lava/lava_still_3.png","lava/lava_still_4.png","lava/lava_still_5.png" };
+	public static Texture[] lava;
+	
 	public static Texture nether_background;
 	public static Texture netherrack;
 	public static Texture portal;
@@ -97,8 +113,13 @@ public class Textures {
 			bee = load("bee_and_puppycat.png", "PNG");
 			hatsune = load("trans_rights.png", "PNG");
 			grass = load("grass.png", "PNG");
-			player = load("steve.png", "PNG");
-			lava = load("lava_still.png", "PNG");
+			
+			playerWLFrames = Spritesheet.spliceLoad(playerWLNames, "PNG");
+			playerWRFrames = Spritesheet.spliceLoad(playerWRNames, "PNG");
+			playerJFrames = Spritesheet.spliceLoad(playerJNames, "PNG");
+			playerFFrames = Spritesheet.spliceLoad(playerFNames, "PNG");
+			
+			lava = Spritesheet.spliceLoad(lavaNames, "PNG");
 			nether_background = load("nether_background.png", "PNG");
 			netherrack = load("netherrack.png", "PNG");
 			portal = load("portal.png", "PNG");

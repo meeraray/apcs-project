@@ -1,18 +1,14 @@
 package game.game_objects.blocks;
 
-import game.Textures;
 import game.game_objects.VisibleObject;
+import utilities.Constants;
 
-public class Block extends VisibleObject {
-	
-	public void render() {
-		Textures.render(Textures.hatsune, x, y, width, height);
-	}
+public abstract class Block extends VisibleObject {
 	
 	public Block(int x, int y) {
 		super(x, y);
-		this.width = 64;
-		this.height = 64;
+		this.width = Constants.UNITSIZE;
+		this.height = Constants.UNITSIZE;
 	}
 	
 	public Block() {

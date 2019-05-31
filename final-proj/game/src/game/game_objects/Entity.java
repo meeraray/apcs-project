@@ -1,21 +1,24 @@
 package game.game_objects;
 
-import game.Constants;
-import game.Textures;
+import org.newdawn.slick.opengl.Texture;
+import utilities.*;
 
 import java.util.ArrayList;
 
-public class Entity extends VisibleObject {
+public abstract class Entity extends VisibleObject {
 	
+	protected boolean isJumping, isMoving, reverseAnim;
+	protected Animator animator;
 	
-	public boolean falling = true;
-
-	public void render() {
-		Textures.render(Textures.hatsune, x, y, 64, 128);
+	public Texture selectAnimationFrame() {
+		return animator.animFrame(isMoving, reverseAnim);
 	}
+	
+	public abstract void render();
 	
 	public void update() {
 		super.update();
+		animator.update();
 //		if(falling) {
 //			yVelocity += Constants.GRAVITY;
 //		}
@@ -23,6 +26,14 @@ public class Entity extends VisibleObject {
 //			yVelocity = 0;
 //		}
 //		System.out.println("Position: " + x + " " + y + " Velocity: " + xVelocity);
+	}
+	
+	protected void handleAnimations() {
+		if ((xVelocity != 0 || yVelocity != 0) && !isMoving) {
+			animator.resetFrames();
+			isMoving = true; 
+		}
+		else if (xVelocity == 0 && yVelocity == 0 && isMoving) { isMoving = false; }
 	}
 	
 	public boolean touchingY(VisibleObject ob) {
@@ -56,8 +67,8 @@ public class Entity extends VisibleObject {
 			if(yVelocity > 0 && this.touchingX(ob)) {
 				int bottomDif = this.y + this.height - ob.y;
 				if(bottomDif >= 0 && bottomDif < ob.height) {
-					System.out.println("there");
 					yVelocity = 0;
+					isJumping = false;
 					if(bottomDif > 0) {
 						this.y = ob.y - this.height;
 					}
@@ -76,14 +87,15 @@ public class Entity extends VisibleObject {
 	}
 	
 	public void jump() {
-		this.falling = true;
+		this.isJumping = true;
 		this.yVelocity = Constants.JUMP_VELOCITY;
 	}
 	
-	public Entity(int x, int y) {
+	public Entity(int x, int y, int animationFPS) {
 		super(x, y);
 		this.width = 64;
 		this.height = 128;
+		animator = new Animator(animationFPS);
 	}
 	
 	public boolean moveBy(int x, int y, ArrayList<VisibleObject> collidable) {

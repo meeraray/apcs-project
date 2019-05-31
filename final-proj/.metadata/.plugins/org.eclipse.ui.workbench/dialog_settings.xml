@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.internal.QuickAccess">
-		<item key="dialogHeight" value="785"/>
-		<item key="dialogWidth" value="1440"/>
-		<list key="textEntries">
-			<item value="1"/>
-		</list>
+		<item key="dialogHeight" value="979"/>
+		<item key="dialogWidth" value="675"/>
 		<list key="orderedElements">
-			<item value="org.eclipse.jdt.ui.PackageExplorer"/>
 		</list>
 		<list key="orderedProviders">
-			<item value="org.eclipse.e4.ui.parts"/>
+		</list>
+		<list key="textEntries">
 		</list>
 		<list key="textArray">
-			<item value="package explorer"/>
 		</list>
 	</section>
 	<section name="ImportExportAction">
+		<item key="ImportExportPage.STORE_SELECTED_IMPORT_WIZARD_ID" value="org.eclipse.ui.wizards.import.ExternalProject"/>
+		<list key="ImportExportPage.STORE_EXPANDED_IMPORT_CATEGORIES">
+			<item value="org.eclipse.ui.Basic"/>
+		</list>
 	</section>
 </section>

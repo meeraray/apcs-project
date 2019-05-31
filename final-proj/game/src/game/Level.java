@@ -1,8 +1,10 @@
 package game;
 
+import game.game_objects.Entity;
 import game.game_objects.EntityPlayer;
 import game.game_objects.VisibleObject;
 import game.game_objects.blocks.Block;
+import utilities.Constants;
 
 import java.util.ArrayList;
 
@@ -11,17 +13,17 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
-public class Level {
-	public static ArrayList<VisibleObject> imgs = new ArrayList<VisibleObject>();
-	public static ArrayList<Block> blocks = new ArrayList<Block>();
-	public static ArrayList<VisibleObject> collidables = new ArrayList<VisibleObject>();
-	public static EntityPlayer player = new EntityPlayer(0, 0);
-	public static boolean gameOver = false;
+public abstract class Level {
+	public ArrayList<VisibleObject> imgs = new ArrayList<VisibleObject>();
+	public ArrayList<Block> blocks = new ArrayList<Block>();
+	public ArrayList<VisibleObject> collidables = new ArrayList<VisibleObject>();
+	protected Entity player;
+	public boolean winGame = false;
 	
-	public static void setup() {
+	protected void generalSetup() {
 		try {
             Display.setDisplayMode(new DisplayMode(Constants.GAME_WIDTH, Constants.GAME_HEIGHT));
-            Display.setTitle("2D Craft"); 
+            Display.setTitle("2D Terraria Clone Demo"); 
             Display.create();
         } catch (LWJGLException e) {
             System.err.println("Display wasn't initialized correctly.");
@@ -31,12 +33,16 @@ public class Level {
         Textures.initGL(Constants.GAME_WIDTH, Constants.GAME_HEIGHT);
         Textures.init();
         
-//        imgs.add(player);
+        player = new EntityPlayer(0, 0, Constants.PLAYERANIMATIONFPS);
 	}
 	
+	public abstract void run();
 	
-	public static void playerMoveHandling() {
-		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
+	protected abstract void update();
+	protected abstract void render();
+	
+	protected void playerMoveHandling() {
+		if (Keyboard.isKeyDown(Keyboard.KEY_D) || Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
 			if(player.x + player.width < Constants.GAME_WIDTH) {
 				player.xVelocity = Constants.MOVE_VELOCITY;
 			}
@@ -44,7 +50,7 @@ public class Level {
 				player.xVelocity = 0;
 			}
 		}
-    	else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
+    	else if (Keyboard.isKeyDown(Keyboard.KEY_A) || Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
     		if(player.x > 0) {
     			player.xVelocity = -1 * Constants.MOVE_VELOCITY;
     		}
@@ -56,8 +62,7 @@ public class Level {
     		player.xVelocity = 0;
     	}
     	
-    	if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-    		System.out.println("jump");
+    	if(Keyboard.isKeyDown(Keyboard.KEY_SPACE) || Keyboard.isKeyDown(Keyboard.KEY_UP)) {
     		for(Block block : blocks) {
     			if(player.onTopOf(block)) {
         			player.jump();
