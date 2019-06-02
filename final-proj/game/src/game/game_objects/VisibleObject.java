@@ -12,13 +12,8 @@ public abstract class VisibleObject {
 	public int width;
 	public int height;
 	
+	public abstract void update();
 	public abstract void render();
-	
-	public void update() {
-		x += xVelocity;
-		y += yVelocity;
-//		render();
-	}
 	
 	public boolean isColliding(VisibleObject other) {
 		Rectangle rect1 = new Rectangle(this.x, this.y, this.width, this.height);

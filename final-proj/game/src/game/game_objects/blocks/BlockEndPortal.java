@@ -10,6 +10,10 @@ public class BlockEndPortal extends Block {
 		this.height = Constants.UNITSIZE * 2;
 	}
 	
+	public void update() {
+		
+	}
+	
 	public void render() {
 		Textures.render(Textures.endportal, x, y, width, height);
 	}

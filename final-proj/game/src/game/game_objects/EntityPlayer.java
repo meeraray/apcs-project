@@ -7,18 +7,19 @@ import game.Textures;
 import utilities.Constants;
 
 public class EntityPlayer extends Entity {
-
+	
 	private Texture[] WLFrames = Textures.playerWLFrames, WRFrames = Textures.playerWRFrames, 
 			JFrames = Textures.playerJFrames, FFrames = Textures.playerFFrames;
 	
-	public EntityPlayer(int x, int y, int animationFPS) {
-		super(x, y, animationFPS);
-		this.width = 64;
-		this.height = 128;
+	public EntityPlayer(int x, int y, double playeranimationfps) {
+		super(x, y, playeranimationfps);
+		this.width = Constants.UNITSIZE;
+		this.height = Constants.UNITSIZE*2;
 		isJumping = false;
 		isMoving = false;
 		reverseAnim = false;
 		animator.setFrames(WRFrames);	// default
+		lives = 3;
 	}
 	
 	public void update() {	
@@ -65,4 +66,8 @@ public class EntityPlayer extends Entity {
 		this.width += 26;
 		this.height += 5;	
 	}
+	
+	// getters/setters
+	public int getLives() { return super.getLives(); }
+	public void setLives(int lives) { super.setLives(lives); }
 }

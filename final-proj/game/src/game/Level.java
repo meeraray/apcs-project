@@ -2,44 +2,36 @@ package game;
 
 import game.game_objects.Entity;
 import game.game_objects.EntityPlayer;
+import game.game_objects.Heart;
 import game.game_objects.VisibleObject;
 import game.game_objects.blocks.Block;
 import utilities.Constants;
 
 import java.util.ArrayList;
 
-import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
 
-public abstract class Level {
+public abstract class Level extends Scene {
 	public ArrayList<VisibleObject> imgs = new ArrayList<VisibleObject>();
 	public ArrayList<Block> blocks = new ArrayList<Block>();
 	public ArrayList<VisibleObject> collidables = new ArrayList<VisibleObject>();
 	protected Entity player;
+	protected Heart[] hearts;
 	public boolean winGame = false;
 	
-	protected void generalSetup() {
-		try {
-            Display.setDisplayMode(new DisplayMode(Constants.GAME_WIDTH, Constants.GAME_HEIGHT));
-            Display.setTitle("2D Terraria Clone Demo"); 
-            Display.create();
-        } catch (LWJGLException e) {
-            System.err.println("Display wasn't initialized correctly.");
-            System.exit(1);
-        }
-        
-        Textures.initGL(Constants.GAME_WIDTH, Constants.GAME_HEIGHT);
-        Textures.init();
-        
+	public Level(boolean pausable) { super(pausable); }
+	
+	public void setup() {
         player = new EntityPlayer(0, 0, Constants.PLAYERANIMATIONFPS);
+        hearts = new Heart[player.getLives()];
+        
+        for (int i = 0; i < hearts.length; i++) { hearts[i] = new Heart(Constants.GAME_WIDTH - Constants.UNITSIZE*(player.getLives() - i), 0); }
 	}
 	
-	public abstract void run();
-	
-	protected abstract void update();
-	protected abstract void render();
+	protected void update() {
+		for (Heart heart : hearts) { heart.setActive(false); }
+		for (int i = 0; i < player.getLives(); i++) { hearts[i].setActive(true); }
+	}
 	
 	protected void playerMoveHandling() {
 		if (Keyboard.isKeyDown(Keyboard.KEY_D) || Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {

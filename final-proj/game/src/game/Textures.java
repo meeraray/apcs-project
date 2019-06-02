@@ -38,34 +38,24 @@ public class Textures {
 	private static String[] playerFNames = { "steve/steve_F_0.png","steve/steve_F_1.png","steve/steve_F_2.png","steve/steve_F_3.png","steve/steve_F_4.png" };
 	public static Texture[] playerFFrames;
 	
+	private static String[] livesNames = { "lives_active.png", "lives_inactive.png" };
+	public static Texture[] livesFrames;
+	
 	private static String[] lavaNames = { "lava/lava_still_0.png","lava/lava_still_1.png","lava/lava_still_2.png","lava/lava_still_3.png","lava/lava_still_4.png","lava/lava_still_5.png" };
 	public static Texture[] lava;
 	
+	public static Texture mainMenuBackground;
+	
+	private static String[] storyScreenNames = { "story_screen_1.png","story_screen_2.png","story_screen_3.png" };
+	public static Texture[] storyScreens;
+	
 	public static Texture nether_background;
+	
+	public static Texture winScreen, loseScreen;
+	
 	public static Texture netherrack;
 	public static Texture portal;
 	public static Texture endportal;
- 
-	/**
-	 * Start the example
-	 */
-//	public void start() {
-//		initGL(400,400);
-//		init();
-// 
-//		while (true) {
-//			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-//			render();
-// 
-//			Display.update();
-//			Display.sync(100);
-// 
-//			if (Display.isCloseRequested()) {
-//				Display.destroy();
-//				System.exit(0);
-//			}
-//		}
-//	}
  
 	/**
 	 * Initialise the GL display
@@ -119,8 +109,19 @@ public class Textures {
 			playerJFrames = Spritesheet.spliceLoad(playerJNames, "PNG");
 			playerFFrames = Spritesheet.spliceLoad(playerFNames, "PNG");
 			
+			livesFrames = Spritesheet.spliceLoad(livesNames, "PNG");
+			
 			lava = Spritesheet.spliceLoad(lavaNames, "PNG");
+			
+			mainMenuBackground = load("main_menu_screen.png", "PNG");
+			
+			storyScreens = Spritesheet.spliceLoad(storyScreenNames, "PNG");
+			
+			winScreen = load("win_screen.png", "PNG");
+			loseScreen = load("lose_screen.png", "PNG");
+			
 			nether_background = load("nether_background.png", "PNG");
+			
 			netherrack = load("netherrack.png", "PNG");
 			portal = load("portal.png", "PNG");
 			endportal = load("portal2.png", "PNG");

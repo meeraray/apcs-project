@@ -3,24 +3,12 @@ package managers;
 import game.*;
 
 public class LevelManager {
+	private final Scene[] scenes = { new MainMenuScene(false), new StoryInfoScene(false), new ParkourLevel(true), new WinScene(false), new LoseScene(false) };
 	
-	int scene;
-	private final Level[] levels = { new ParkourLevel() };
+	public LevelManager() { /* scenes[0].setup(); */ }
 	
-	public LevelManager(int scene) {
-		this.scene = scene;
-	}
-	
-	public void playScene() {
-		if (scene < 1) {
-			levels[scene].run();
-			// eventually, run main menu screen
-		} else if (scene >= 1 && scene <= levels.length) {
-			levels[scene-1].run();
-		} else if (scene == levels.length + 2) {
-			// run the win screen
-		} else if (scene == levels.length + 3) {
-			// run the lose screen
-		}
+	public void playScene(int scene) {
+		scenes[scene].setup();
+		scenes[scene].run();
 	}
 }

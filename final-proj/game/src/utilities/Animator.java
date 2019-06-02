@@ -4,7 +4,7 @@ import org.newdawn.slick.opengl.Texture;
 
 public class Animator {
 	
-	private int fps;
+	private double fps;
 	private int animationFrame = 0;
 	private double currTime, animateTime, deltaTime;
 	
@@ -12,7 +12,7 @@ public class Animator {
 	
 	private boolean left, right;
 		
-	public Animator(int fps) {
+	public Animator(double fps) {
 		this.fps = fps;
 		deltaTime = 1000/fps;
 		currTime = System.currentTimeMillis();
@@ -21,7 +21,7 @@ public class Animator {
 		right = true;
 	}
 	
-	public Animator(int fps, Texture[] frames) {
+	public Animator(double fps, Texture[] frames) {
 		this.fps = fps;
 		this.frames = frames;
 		deltaTime = 1000/fps;
@@ -47,13 +47,13 @@ public class Animator {
 							 left = false;
 						 } else { animationFrame--; }
 					 } else if (right) {
-						 if (animationFrame >= Constants.ANIMFRAMELENGH-1) { 
+						 if (animationFrame >= frames.length-1) { 
 							 left = true; 
 							 right = false;
 						 } else { animationFrame++; }
 					 }
 				 } else {
-					 if (animationFrame >= Constants.ANIMFRAMELENGH-1) { animationFrame = 0; }
+					 if (animationFrame >= frames.length-1) { animationFrame = 0; }
 					 else { animationFrame++; }
 				 }
 				 animateTime = currTime;
@@ -66,4 +66,6 @@ public class Animator {
 	public Texture[] getCurrentFrames() { return frames; }
 	public void resetFrames() { animationFrame = 0; }
 	public void setFrames(Texture[] frames) { this.frames = frames; }
+	public double getFPS() { return fps; }
+	public void setFPS(int fps) { this.fps = fps; } 
 }

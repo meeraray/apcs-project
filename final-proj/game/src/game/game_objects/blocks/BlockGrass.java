@@ -9,4 +9,8 @@ public class BlockGrass extends Block {
 	public void render() {
 		Textures.render(Textures.grass, x, y, width, height);
 	}
+
+	public void update() {
+		
+	}
 }

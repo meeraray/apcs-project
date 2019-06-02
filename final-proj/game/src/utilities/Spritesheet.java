@@ -6,9 +6,7 @@ import java.io.IOException;
 
 import org.newdawn.slick.opengl.Texture;
 
-public class Spritesheet {
-	public final int WIDTH = Constants.UNITSIZE, HEIGHT = Constants.UNITSIZE;
-	
+public class Spritesheet {	
 	public static Texture[] spliceLoad(String[] paths, String type) throws IOException {
 		int numOfSprites = paths.length;
 		

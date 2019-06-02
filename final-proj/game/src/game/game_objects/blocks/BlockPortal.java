@@ -12,4 +12,8 @@ public class BlockPortal extends Block {
 	public void render() {
 		Textures.render(Textures.portal, x, y, width, height);
 	}
+
+	public void update() {
+		
+	}
 }

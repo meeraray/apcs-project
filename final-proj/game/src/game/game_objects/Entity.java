@@ -10,6 +10,8 @@ public abstract class Entity extends VisibleObject {
 	protected boolean isJumping, isMoving, reverseAnim;
 	protected Animator animator;
 	
+	protected int lives;
+	
 	public Texture selectAnimationFrame() {
 		return animator.animFrame(isMoving, reverseAnim);
 	}
@@ -17,15 +19,9 @@ public abstract class Entity extends VisibleObject {
 	public abstract void render();
 	
 	public void update() {
-		super.update();
+		x += xVelocity;
+		y += yVelocity;
 		animator.update();
-//		if(falling) {
-//			yVelocity += Constants.GRAVITY;
-//		}
-//		else {
-//			yVelocity = 0;
-//		}
-//		System.out.println("Position: " + x + " " + y + " Velocity: " + xVelocity);
 	}
 	
 	protected void handleAnimations() {
@@ -91,14 +87,18 @@ public abstract class Entity extends VisibleObject {
 		this.yVelocity = Constants.JUMP_VELOCITY;
 	}
 	
-	public Entity(int x, int y, int animationFPS) {
+	public Entity(int x, int y, double playeranimationfps) {
 		super(x, y);
 		this.width = 64;
 		this.height = 128;
-		animator = new Animator(animationFPS);
+		animator = new Animator(playeranimationfps);
 	}
 	
-	public boolean moveBy(int x, int y, ArrayList<VisibleObject> collidable) {
+	/* public boolean moveBy(int x, int y, ArrayList<VisibleObject> collidable) {
 		return true;
-	}
+	} */
+	
+	// getters/setters
+	public int getLives() { return lives; }
+	public void setLives(int lives) { this.lives = lives; }
 }

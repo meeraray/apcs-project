@@ -2,20 +2,18 @@ package game;
 
 import game.game_objects.*;
 import game.game_objects.blocks.*;
+import managers.GameManager;
 import testing.Game;
 import utilities.Constants;
-
-import org.lwjgl.opengl.Display;
 
 public class ParkourLevel extends Level {
 	
 	private int playerSpawnX, playerSpawnY;
 	
-	public ParkourLevel() { parkourLevelSetup(); }
+	public ParkourLevel(boolean pausable) { super(pausable); }
 	
-	protected void parkourLevelSetup() {
-		generalSetup();
-		
+	public void setup() {		
+		super.setup();
 		playerSpawnX = 0;
 		playerSpawnY = Game.HEIGHT / 2 - player.height - 64 + 5;
 		
@@ -49,38 +47,44 @@ public class ParkourLevel extends Level {
 		blocks.add(endportal);
 		imgs.add(player);
 		
+		for (int i = 0; i < hearts.length; i++) { imgs.add(hearts[i]); }
 	}
 	
 	public void run() {
-               
-        while (!Display.isCloseRequested()) {        	
-        	update();
-        	render();
-        	
-            Display.update();
-            Display.sync(Constants.SCREENFPS);
-        }
- 
-        Display.destroy();
-        System.exit(0);
+		super.run();
 	}
 
 	protected void update() {
+		super.update();
+		
 		playerMoveHandling();
     	player.yVelocity += Constants.GRAVITY;
     	player.collideStop(collidables);
     	
     	for(Block b : blocks) {
-    		if(b instanceof BlockLava && player.isColliding(b)) {
-    			player.x = playerSpawnX;
-    			player.y = playerSpawnY;
-    			break;
+    		if(b instanceof BlockLava) {
+    			if (player.isColliding(b)) {
+	    			player.x = playerSpawnX;
+	    			player.y = playerSpawnY;
+	    			
+	    			if (player.getLives() > 1) {
+	    				player.setLives(player.getLives()-1); 
+	    			}
+	    			else { 
+	    				remove();
+	    				GameManager.RunScene(4); // lose screen 
+	    			} 
+    			 
+	    			break;
+    			} 
     		}
     		if(b instanceof BlockEndPortal && player.isColliding(b)) {
-    			winGame = true;	// TODO switch to win screen
-    		}
+    			remove();
+    			GameManager.RunScene(3);	// win screen
+    		} 
     	}
     	
+    	for (int i = 0; i < player.getLives(); i++) { hearts[i].setActive(true); }
     	for(VisibleObject o : imgs) { o.update(); }
 	}
 
@@ -88,9 +92,12 @@ public class ParkourLevel extends Level {
 		Textures.render(Textures.nether_background);
 		
 		for(VisibleObject o : imgs) { o.render(); }
-		
-		if(winGame) {
-    		Textures.render(Textures.sky); // TODO switch to win screen
-    	}
+	}
+	
+	protected void remove() {
+		imgs.clear();
+		blocks.clear();
+		collidables.clear();
+		player = null;
 	}
 }

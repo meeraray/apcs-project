@@ -9,4 +9,8 @@ public class BlockNether extends Block {
 	public void render() {
 		Textures.render(Textures.netherrack, x, y, width, height);
 	}
+
+	public void update() {
+		
+	}
 }

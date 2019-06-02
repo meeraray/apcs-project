@@ -11,3 +11,6 @@
 1559261608214	Rename method 'resetFrame'
 1559261612314	Rename method 'setFrame'
 1559261620897	Rename field 'changingFrame'
+1559317775655	Rename field 'levels'
+1559339220949	Encapsulate field 'yDirection'
+1559339232013	Encapsulate field 'xDirection'
