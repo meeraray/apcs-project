@@ -1,2 +1,2 @@
 # apcs-project
-2d minecraft obstacle game for the AP Computer Science 
+Our 2D Minecraft Terraria Clone is an obstable game for the final AP Computer Science A project.
