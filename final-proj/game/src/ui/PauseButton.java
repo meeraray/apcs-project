@@ -9,13 +9,10 @@ import utilities.*;
 
 public class PauseButton extends Button {
 
-	private Cooldown buttonCooldown = new Cooldown(0.3);
-	
 	public PauseButton(int x, int y, int width, int height, Texture[] textures) { super(x, y, width, height, textures, 0); }
 	
 	public void pauseButtonUpdate() {
 		super.update();
-		buttonCooldown.update();
 	}
 	
 	public void pauseButtonRender() {
@@ -34,16 +31,25 @@ public class PauseButton extends Button {
 			if (GameManager.isGamePaused()) { buttonTexture = buttonTextures[3]; }
 			else { buttonTexture = buttonTextures[1]; }
 			
-			if (Mouse.isButtonDown(0) && buttonCooldown.isCooldownCompleted()) { 
+			if (Mouse.isButtonDown(0) && !clickTransition) { 
 				Sounds.play(Sounds.click, AudioType.SFX);
 				GameManager.toggleGamePause(); 
-				buttonCooldown.reset();
+				clickCooldown = new Cooldown(Constants.BUTTONCLICKCOOLDOWN);
+				clickCooldown.reset();
+				clickTransition = true;
 			}
 		} else {
 			canPlayHoverSound = true;
 			
 			if (GameManager.isGamePaused()) { buttonTexture = buttonTextures[2]; }
 			else { buttonTexture = buttonTextures[0]; }
+		}
+	}
+	
+	protected void buttonClickTransition() {
+		if (clickCooldown.isCooldownCompleted()) {			
+			clickCooldown = null;
+			clickTransition = false;
 		}
 	}
 }

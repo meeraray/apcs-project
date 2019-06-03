@@ -14,6 +14,7 @@ import utilities.Cooldown;
 public abstract class Scene {	
 	protected boolean pausable, winTransition, lostLifeOrLostTransition, outOfTimeTransition;
 	protected ArrayList<Button> buttons = new ArrayList<Button>();
+	protected ArrayList<Cooldown> cooldowns = new ArrayList<Cooldown>();
 	
 	private boolean pause = false;
 	private Cooldown keyCooldown = new Cooldown(0.3);
@@ -22,6 +23,7 @@ public abstract class Scene {
 	public Scene(boolean pausable) { this.pausable = pausable; }
 	
 	public void setup() {
+		for (Button button : buttons) { button.setup(); }
 		if (pausable) { pauseButton = new PauseButton(Constants.GAME_WIDTH/2-Constants.UNITSIZE/2, 10, Constants.UNITSIZE, Constants.UNITSIZE, Textures.pauseButtonFrames); }
 		else { pauseButton = null; }
 	}
@@ -36,7 +38,9 @@ public abstract class Scene {
 			if (!pause) {
 	        	update();
 	        	render();
-			} 
+			} else {
+				for (Cooldown cd : cooldowns) { cd.pauseUpdate(); }
+			}
 			if (pausable) {
 				pauseButton.pauseButtonUpdate();
 				pauseButton.pauseButtonRender();
@@ -56,7 +60,10 @@ public abstract class Scene {
 	
 	// getters/setters
 	public boolean isPaused() { return pause; }
-	public void togglePause() { pause = !pause; }
+	public void togglePause() { 
+		pause = !pause; 
+		if (pause) { for (Cooldown cd : cooldowns) { cd.pause(); } }
+	}
 	public boolean isWinTransition() { return winTransition; }
 	public boolean isLostLifeOrLostTransition() { return lostLifeOrLostTransition; }
 	public boolean isOutOfTimeTransition() { return outOfTimeTransition; }

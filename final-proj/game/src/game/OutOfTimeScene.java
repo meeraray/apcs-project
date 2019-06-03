@@ -13,6 +13,8 @@ public class OutOfTimeScene extends Scene {
 	
 	public void setup() {
 		super.setup();
+		Sounds.stopSFX();
+		
 		playAgainButton = new Button(Constants.GAME_WIDTH/2-Constants.UNITSIZE*2, Constants.GAME_HEIGHT-Constants.UNITSIZE*2-20, Constants.UNITSIZE*4, Constants.UNITSIZE*2, Textures.playAgainButtonFrames, 3);
 		mainMenuButton = new Button(50, Constants.GAME_HEIGHT-Constants.UNITSIZE*2-20, Constants.UNITSIZE*4, Constants.UNITSIZE*2, Textures.mainMenuButtonFrames, 0);
 		quitButton = new Button(Constants.GAME_WIDTH-Constants.UNITSIZE*4-50, Constants.GAME_HEIGHT-Constants.UNITSIZE*2-20, Constants.UNITSIZE*4, Constants.UNITSIZE*2, Textures.quitButtonFrames, -1);
@@ -20,6 +22,7 @@ public class OutOfTimeScene extends Scene {
 		buttons.add(mainMenuButton);
 		buttons.add(quitButton);
 		
+		Sounds.play(Sounds.lost, AudioType.SFX);
 		Sounds.play(Sounds.loseScreenMusic, AudioType.MUSIC);
 	}
 

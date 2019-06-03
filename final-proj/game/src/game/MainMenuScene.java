@@ -13,13 +13,16 @@ public class MainMenuScene extends Scene {
 	public MainMenuScene(boolean pausable) { super(pausable); }
 	
 	public void setup() {
-		super.setup();
+		Sounds.stopSFX();
+		
 		playButton = new Button(Constants.GAME_WIDTH/2-Constants.UNITSIZE*2, 20, Constants.UNITSIZE*4, Constants.UNITSIZE*2, Textures.playButtonFrames, 2);
 		controlsButton = new Button(50, 20, Constants.UNITSIZE*4, Constants.UNITSIZE*2, Textures.controlsButtonFrames, 1);
 		quitButton = new Button(Constants.GAME_WIDTH-Constants.UNITSIZE*4-50, 20, Constants.UNITSIZE*4, Constants.UNITSIZE*2, Textures.quitButtonFrames, -1);
 		buttons.add(playButton);
 		buttons.add(controlsButton);
 		buttons.add(quitButton);
+		
+		super.setup();
 
 		Sounds.play(Sounds.mainMenuMusic, AudioType.MUSIC); 
 	}

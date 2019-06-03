@@ -12,6 +12,8 @@ public class StoryInfoScene extends Scene {
 	public StoryInfoScene(boolean pausable) { super(pausable); }
 	
 	public void setup() {
+		Sounds.stopSFX();
+		
 		super.setup();
 		currScene = 0;
 		currTime = System.currentTimeMillis();

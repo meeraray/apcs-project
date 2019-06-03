@@ -25,11 +25,10 @@ public abstract class Entity extends VisibleObject {
 	public void update() {
 		if (!GameManager.isWinTransition() && !GameManager.isLostLifeOrLostTransition() && !GameManager.isOutOfTimeTransition()) {
 			x += xVelocity;
-			y += yVelocity;
 		} else {
 			xVelocity = 0;
-			yVelocity = 0;
 		}
+		y += yVelocity;
 		
 		animator.update();
 	}
@@ -43,7 +42,6 @@ public abstract class Entity extends VisibleObject {
 	}
 	
 	protected void handleSounds() {
-		System.out.println(Sounds.walk.isPlaying());
 		if (yVelocity == 0 && xVelocity != 0 && !isJumping && !isFalling && !Sounds.walk.isPlaying()) {
 			Sounds.play(Sounds.walk, AudioType.SFX);
 		} 
@@ -114,6 +112,7 @@ public abstract class Entity extends VisibleObject {
 		this.width = 64;
 		this.height = 128;
 		animator = new Animator(playeranimationfps);
+		if (Sounds.walk.isPlaying()) { Sounds.walk.stop(); }
 	}
 	
 	/* public boolean moveBy(int x, int y, ArrayList<VisibleObject> collidable) {

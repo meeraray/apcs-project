@@ -12,9 +12,12 @@ public class WinScene extends Scene {
 	public WinScene(boolean pausable) { super(pausable); }
 	
 	public void setup() {
-		super.setup();
+		Sounds.stopSFX();
+		
 		quitButton = new Button(Constants.GAME_WIDTH/2-Constants.UNITSIZE*2, Constants.GAME_HEIGHT-Constants.UNITSIZE*2-10, Constants.UNITSIZE*4, Constants.UNITSIZE*2, Textures.quitButtonFrames, -1);
 		buttons.add(quitButton);
+		
+		super.setup();
 		
 		Sounds.play(Sounds.winScreenMusic, AudioType.MUSIC);
 	}

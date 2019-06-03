@@ -12,7 +12,8 @@ public class ParkourLevel extends Level {
 	protected Cooldown parkourLevelTime;
 	
 	private int playerSpawnX, playerSpawnY;
-	private boolean hurtByLava, playPoisonSound, playBurnSound, playLostSound;
+	private double time;
+	private boolean hurtByLava, playPoisonSound, playBurnSound;
 	
 	public ParkourLevel(boolean pausable) { super(pausable); }
 	
@@ -23,7 +24,6 @@ public class ParkourLevel extends Level {
 		hurtByLava = false;
 		playPoisonSound = false;
 		playBurnSound = false;
-		playLostSound = false;
 		
 		Sounds.play(Sounds.screenflip, AudioType.SFX);
 		Sounds.play(Sounds.parkourLevelMusic, AudioType.MUSIC);
@@ -61,8 +61,9 @@ public class ParkourLevel extends Level {
 		
 		for (int i = 0; i < hearts.length; i++) { imgs.add(hearts[i]); }
 		
-		double time = 10.0 + (int)(Math.random()*21);	// from 10-30 seconds
+		time = 5.0 + (Math.random()*15);	// from 5-20 seconds for the player to complete the entire level per respawn
 		parkourLevelTime = new Cooldown(time);
+		cooldowns.add(parkourLevelTime);
 	}
 
 	protected void update() {
@@ -70,7 +71,7 @@ public class ParkourLevel extends Level {
 		
 		parkourLevelTime.update();
 		
-		if (parkourLevelTime.isCooldownCompleted() && !lostLifeOrLostTransition && !winTransition) { outOfTimeTransition(); } 
+		if (parkourLevelTime.isCooldownCompleted() && !winTransition) { outOfTimeTransition(); } 
 		
 		if (!Sounds.lava.isPlaying()) { Sounds.play(Sounds.lava, AudioType.SFX); }
 		
@@ -81,7 +82,7 @@ public class ParkourLevel extends Level {
     					player.setLives(player.getLives()-1); 
     					hurtByLava = true;
     				}
-    				if (!outOfTimeTransition && !winTransition) { lostLifeOrLoseTransition(); }
+    				if (!winTransition) { lostLifeOrLoseTransition(); }
 	    			break;
     			} 
     		}
@@ -129,20 +130,22 @@ public class ParkourLevel extends Level {
 		}
 
 		if (!playBurnSound) { 
-			if (Sounds.landOnBlock.isPlaying()) { Sounds.stopSound(Sounds.landOnBlock); }
 			Sounds.play(Sounds.burn, AudioType.SFX); 
 			playBurnSound = true;
 		}
 		
 		if (transitionTime.isCooldownCompleted()) {
 			if (player.getLives() == 0) {
-				if (!playLostSound) {
-					Sounds.play(Sounds.lost, AudioType.SFX);
-					playLostSound = true;
-				}
 				clear();
 				GameManager.RunScene(5);	// lose screen
 			} else {
+				time = 5.0 + (Math.random()*15);	// from 5-20 seconds for the player to complete the entire level per respawn
+				
+				cooldowns.remove(parkourLevelTime);
+				parkourLevelTime = new Cooldown(time);
+				parkourLevelTime.reset();
+				cooldowns.add(parkourLevelTime);
+				
 				player.x = playerSpawnX;
 				player.y = playerSpawnY;
 			}
@@ -166,7 +169,6 @@ public class ParkourLevel extends Level {
 		
 		if (transitionTime.isCooldownCompleted()) {
 			outOfTimeTransition = false;
-			Sounds.play(Sounds.lost, AudioType.SFX);
 			clear();
 			GameManager.RunScene(6);	// out of time scene
 		}

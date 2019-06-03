@@ -37,6 +37,8 @@ public abstract class Level extends Scene {
         
         for (int i = 0; i < hearts.length; i++) { hearts[i] = new Heart(Constants.GAME_WIDTH - Constants.UNITSIZE*(player.getLives() - i), 0); }
         transitionTime = new Cooldown(Constants.TRANSITIONTIME);
+        
+        cooldowns.add(transitionTime);
 	}
 	
 	protected void update() {
@@ -92,7 +94,7 @@ public abstract class Level extends Scene {
 		blocks.clear();
 		collidables.clear();
 		player = null;
-		Sounds.stopSFX();
+		cooldowns.clear();
 	}
 	
 	protected abstract void winTransition();

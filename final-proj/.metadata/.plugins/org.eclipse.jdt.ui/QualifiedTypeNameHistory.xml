@@ -21,10 +21,10 @@
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="game.game_objects.blocks.BlockLava"/>
 <fullyQualifiedTypeName name="utilities.Cooldown"/>
-<fullyQualifiedTypeName name="managers.Sounds"/>
 <fullyQualifiedTypeName name="managers.GameManager"/>
 <fullyQualifiedTypeName name="utilities.Constants"/>
 <fullyQualifiedTypeName name="utilities.Animator"/>
 <fullyQualifiedTypeName name="managers.Textures"/>
 <fullyQualifiedTypeName name="org.newdawn.slick.TrueTypeFont"/>
+<fullyQualifiedTypeName name="managers.Sounds"/>
 </qualifiedTypeNameHistroy>

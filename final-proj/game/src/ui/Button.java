@@ -17,7 +17,8 @@ public class Button extends VisibleObject {
 	protected Texture buttonTexture;
 	protected int sceneChangeIndex;
 	
-	protected boolean canPlayHoverSound = true;
+	protected boolean canPlayHoverSound, clickTransition;
+	protected Cooldown clickCooldown;
 	
 	public Button(int x, int y, int width, int height, Texture[] textures, int sceneChangeIndex) {
 		this.x = x;
@@ -29,8 +30,18 @@ public class Button extends VisibleObject {
 		this.sceneChangeIndex = sceneChangeIndex;
 	}
 	
+	public void setup() {
+		canPlayHoverSound = true;
+		clickTransition = false;
+		clickCooldown = null;
+	}
+	
 	public void update() {
 		checkMouseOverAndClick();
+		if (clickTransition) { 
+			clickCooldown.update();
+			buttonClickTransition(); 
+		}
 	}
 
 	public void render() {
@@ -46,19 +57,29 @@ public class Button extends VisibleObject {
 			}
 			buttonTexture = buttonTextures[1];
 			
-			if (Mouse.isButtonDown(0)) {
+			if (Mouse.isButtonDown(0) && !clickTransition) {
 				Sounds.play(Sounds.click, AudioType.SFX);
-				
-				if (sceneChangeIndex != -1) { GameManager.RunScene(sceneChangeIndex); } 
-				else { 
-					Display.destroy();
-				    AL.destroy();
-					System.exit(0); 
-				}  
+				clickCooldown = new Cooldown(Constants.BUTTONCLICKCOOLDOWN);
+				clickCooldown.reset();
+				clickTransition = true;
 			}
 		} else {
 			canPlayHoverSound = true;
 			buttonTexture = buttonTextures[0];
+		}
+	}
+	
+	protected void buttonClickTransition() {
+		if (clickCooldown.isCooldownCompleted()) {			
+			if (sceneChangeIndex != -1) { GameManager.RunScene(sceneChangeIndex); } 
+			else { 
+				Display.destroy();
+			    AL.destroy();
+				System.exit(0); 
+			}  
+			
+			clickCooldown = null;
+			clickTransition = false;
 		}
 	}
 }

@@ -26,7 +26,7 @@ public class EntityPlayer extends Entity {
 		reverseAnim = false;
 		instantiateFlame = false;
 		animator.setFrames(WRFrames);	// default
-		lives = 1 + (int)(Math.random()*5);	// 1-5 lives
+		lives = 1 + (int)(Math.random()*5);	// 1-5 lives (discrete of course)
 	}
 	
 	public void update() {	
@@ -58,14 +58,18 @@ public class EntityPlayer extends Entity {
 			reverseAnim = true;
 			isMoving = true;	// so that the animation can be played out
 			animator.setFrames(WFrames);
-		} else if (GameManager.isLostLifeOrLostTransition()) {
-			reverseAnim = true;
-			isMoving = true;	// so that the animation can be played out
-			animator.setFrames(BFrames);
-		} else if (GameManager.isOutOfTimeTransition()) {
-			reverseAnim = false;
-			isMoving = true;	// so that the animation can be played out
-			animator.setFrames(PFrames);
+		} 
+		else if (GameManager.isLostLifeOrLostTransition() || GameManager.isOutOfTimeTransition()) {	// out of time and lost life (from lava) animations can be played simultaneously
+			if (GameManager.isLostLifeOrLostTransition()) {
+				reverseAnim = true;
+				isMoving = true;	// so that the animation can be played out
+				animator.setFrames(BFrames);
+			}
+			if (GameManager.isOutOfTimeTransition()) {
+				reverseAnim = false;
+				isMoving = true;	// so that the animation can be played out
+				animator.setFrames(PFrames);
+			}
 		} else {
 			// Vertical movement animations take precedence over horizontal movement animations
 			super.handleAnimations();	// put here so that during the transitions, the zero movement animation code will not freeze the winning/dying player animations
