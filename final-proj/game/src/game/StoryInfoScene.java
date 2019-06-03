@@ -1,21 +1,24 @@
 package game;
 
 import managers.GameManager;
-import utilities.Constants;
+import managers.Sounds;
+import managers.Textures;
+import utilities.*;
 
 public class StoryInfoScene extends Scene {
-	private int numOfScenes = Constants.NUMOFSTORYSCREENS, currScene = 0;
-	private double screenTime = 3, deltaTime = 1000/(1.0/screenTime), currTime, flipTime;	
+	private int numOfScenes = Constants.NUMOFSTORYSCREENS, currScene;
+	private double screenTime = 4.0, deltaTime = 1000/(1.0/screenTime), currTime, flipTime;	
 	
 	public StoryInfoScene(boolean pausable) { super(pausable); }
 	
 	public void setup() {
+		super.setup();
+		currScene = 0;
 		currTime = System.currentTimeMillis();
 		flipTime = System.currentTimeMillis();
-	}
-	
-	public void run() { 
-		super.run(); 
+		
+		Sounds.play(Sounds.storySceneMusic, AudioType.MUSIC);
+		Sounds.play(Sounds.screenflip, AudioType.SFX);
 	}
 
 	protected void update() {
@@ -23,10 +26,11 @@ public class StoryInfoScene extends Scene {
 		
 		if (currTime - flipTime >= deltaTime) { 
 			if (currScene < numOfScenes-1) {
+				Sounds.play(Sounds.screenflip, AudioType.SFX);
 				currScene++;
 				flipTime = currTime;
 			} else {
-				GameManager.RunScene(2);
+				GameManager.RunScene(3);
 			}
 		} 
 	}
@@ -35,5 +39,5 @@ public class StoryInfoScene extends Scene {
 		Textures.render(Textures.storyScreens[currScene]);
 	}
 	
-	protected void remove() {  }
+	public void clear() {  }
 }

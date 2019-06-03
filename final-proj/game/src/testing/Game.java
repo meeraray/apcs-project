@@ -1,9 +1,9 @@
 package testing;
 
-import game.Textures;
 import game.game_objects.*;
 import game.game_objects.VisibleObject;
 import game.game_objects.blocks.*;
+import managers.Textures;
 import utilities.Constants;
 
 import java.util.ArrayList;
@@ -34,9 +34,9 @@ public class Game {
 //        Textures.render(Textures.hatsune);
         
         Entity b = new EntityPlayer(0, 0, 30);
-        Block b2 = new BlockGrass(0, 256);
+        Block b2 = new BlockNether(0, 256);
         while (!Display.isCloseRequested()) {
-        	Textures.render(Textures.sky);
+        	Textures.render(Textures.mainMenuBackground);
         	if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
 				b.xVelocity = Constants.MOVE_VELOCITY;
 			}

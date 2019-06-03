@@ -5,7 +5,9 @@ import game.game_objects.EntityPlayer;
 import game.game_objects.Heart;
 import game.game_objects.VisibleObject;
 import game.game_objects.blocks.Block;
+import managers.Sounds;
 import utilities.Constants;
+import utilities.Cooldown;
 
 import java.util.ArrayList;
 
@@ -17,18 +19,39 @@ public abstract class Level extends Scene {
 	public ArrayList<VisibleObject> collidables = new ArrayList<VisibleObject>();
 	protected Entity player;
 	protected Heart[] hearts;
-	public boolean winGame = false;
+	protected boolean playWinSound;
+	protected Cooldown transitionTime;
 	
-	public Level(boolean pausable) { super(pausable); }
+	public Level(boolean pausable) { super(pausable);  }
 	
 	public void setup() {
+		super.setup();
+		Sounds.stopSFX();
+		
+		playWinSound = false;
+		winTransition = false;
+		lostLifeOrLostTransition = false;
+		
         player = new EntityPlayer(0, 0, Constants.PLAYERANIMATIONFPS);
         hearts = new Heart[player.getLives()];
         
         for (int i = 0; i < hearts.length; i++) { hearts[i] = new Heart(Constants.GAME_WIDTH - Constants.UNITSIZE*(player.getLives() - i), 0); }
+        transitionTime = new Cooldown(Constants.TRANSITIONTIME);
 	}
 	
 	protected void update() {
+		transitionTime.update();
+		
+		if (!winTransition && !lostLifeOrLostTransition && !outOfTimeTransition) { playerMoveHandling(); }
+		
+    	player.yVelocity += Constants.GRAVITY;
+    	player.collideStop(collidables);
+    	
+    	player.setFalling(true);
+    	for (Block block : blocks) {
+    		if (player.onTopOf(block)) { player.setFalling(false); }
+    	}
+    	
 		for (Heart heart : hearts) { heart.setActive(false); }
 		for (int i = 0; i < player.getLives(); i++) { hearts[i].setActive(true); }
 	}
@@ -61,7 +84,17 @@ public abstract class Level extends Scene {
         			break;
         		}
     		}
-    		
     	}
 	}
+	
+	public void clear() {
+		imgs.clear();
+		blocks.clear();
+		collidables.clear();
+		player = null;
+		Sounds.stopSFX();
+	}
+	
+	protected abstract void winTransition();
+	protected abstract void lostLifeOrLoseTransition();
 }

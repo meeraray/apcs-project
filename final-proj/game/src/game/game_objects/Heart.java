@@ -2,7 +2,7 @@ package game.game_objects;
 
 import org.newdawn.slick.opengl.Texture;
 
-import game.Textures;
+import managers.Textures;
 import utilities.Constants;
 
 public class Heart extends VisibleObject {

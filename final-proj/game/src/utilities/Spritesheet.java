@@ -1,10 +1,10 @@
 package utilities;
 
-import game.Textures;
-
 import java.io.IOException;
 
 import org.newdawn.slick.opengl.Texture;
+
+import managers.Textures;
 
 public class Spritesheet {	
 	public static Texture[] spliceLoad(String[] paths, String type) throws IOException {

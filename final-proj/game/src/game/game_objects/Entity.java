@@ -1,13 +1,17 @@
 package game.game_objects;
 
 import org.newdawn.slick.opengl.Texture;
+
+import game.game_objects.blocks.BlockLava;
+import managers.GameManager;
+import managers.Sounds;
 import utilities.*;
 
 import java.util.ArrayList;
 
 public abstract class Entity extends VisibleObject {
 	
-	protected boolean isJumping, isMoving, reverseAnim;
+	protected boolean isJumping, isMoving, isFalling, reverseAnim;
 	protected Animator animator;
 	
 	protected int lives;
@@ -19,8 +23,14 @@ public abstract class Entity extends VisibleObject {
 	public abstract void render();
 	
 	public void update() {
-		x += xVelocity;
-		y += yVelocity;
+		if (!GameManager.isWinTransition() && !GameManager.isLostLifeOrLostTransition() && !GameManager.isOutOfTimeTransition()) {
+			x += xVelocity;
+			y += yVelocity;
+		} else {
+			xVelocity = 0;
+			yVelocity = 0;
+		}
+		
 		animator.update();
 	}
 	
@@ -30,6 +40,13 @@ public abstract class Entity extends VisibleObject {
 			isMoving = true; 
 		}
 		else if (xVelocity == 0 && yVelocity == 0 && isMoving) { isMoving = false; }
+	}
+	
+	protected void handleSounds() {
+		System.out.println(Sounds.walk.isPlaying());
+		if (yVelocity == 0 && xVelocity != 0 && !isJumping && !isFalling && !Sounds.walk.isPlaying()) {
+			Sounds.play(Sounds.walk, AudioType.SFX);
+		} 
 	}
 	
 	public boolean touchingY(VisibleObject ob) {
@@ -64,12 +81,16 @@ public abstract class Entity extends VisibleObject {
 				int bottomDif = this.y + this.height - ob.y;
 				if(bottomDif >= 0 && bottomDif < ob.height) {
 					yVelocity = 0;
+					if (isJumping || isFalling) {
+						if (!(ob instanceof BlockLava)) { Sounds.play(Sounds.landOnBlock, AudioType.SFX); }
+					}
 					isJumping = false;
+					isFalling = false;
 					if(bottomDif > 0) {
 						this.y = ob.y - this.height;
 					}
 				}
-			}
+			} 
 			if(yVelocity < 0 && this.touchingX(ob)) {
 				int topDif = ob.y + ob.height - this.y;
 				if(topDif >= 0 && topDif < 5) {
@@ -85,6 +106,7 @@ public abstract class Entity extends VisibleObject {
 	public void jump() {
 		this.isJumping = true;
 		this.yVelocity = Constants.JUMP_VELOCITY;
+		Sounds.play(Sounds.jump, AudioType.SFX);
 	}
 	
 	public Entity(int x, int y, double playeranimationfps) {
@@ -101,4 +123,5 @@ public abstract class Entity extends VisibleObject {
 	// getters/setters
 	public int getLives() { return lives; }
 	public void setLives(int lives) { this.lives = lives; }
+	public void setFalling(boolean isFalling) { this.isFalling = isFalling; }
 }

@@ -3,13 +3,18 @@ package game.game_objects;
 import java.util.ArrayList;
 
 import org.newdawn.slick.opengl.Texture;
-import game.Textures;
-import utilities.Constants;
+
+import managers.GameManager;
+import managers.Textures;
+import utilities.*;
 
 public class EntityPlayer extends Entity {
+
+	private VisibleObject flame;
+	private boolean instantiateFlame;
 	
-	private Texture[] WLFrames = Textures.playerWLFrames, WRFrames = Textures.playerWRFrames, 
-			JFrames = Textures.playerJFrames, FFrames = Textures.playerFFrames;
+	private Texture[] PFrames = Textures.playerPFrames, BFrames = Textures.playerBFrames, WFrames = Textures.playerWFrames, 
+			WLFrames = Textures.playerWLFrames, WRFrames = Textures.playerWRFrames, JFrames = Textures.playerJFrames, FFrames = Textures.playerFFrames;
 	
 	public EntityPlayer(int x, int y, double playeranimationfps) {
 		super(x, y, playeranimationfps);
@@ -17,44 +22,78 @@ public class EntityPlayer extends Entity {
 		this.height = Constants.UNITSIZE*2;
 		isJumping = false;
 		isMoving = false;
+		isFalling = false;
 		reverseAnim = false;
+		instantiateFlame = false;
 		animator.setFrames(WRFrames);	// default
-		lives = 3;
+		lives = 1 + (int)(Math.random()*5);	// 1-5 lives
 	}
 	
 	public void update() {	
-		handleAnimations();
 		super.update();
+		
+		if (GameManager.isLostLifeOrLostTransition() && !instantiateFlame) { 
+			flame = new Flame(x - (Constants.UNITSIZE/2), y - (Constants.UNITSIZE*2));
+			instantiateFlame = true;
+		}
+		
+		if (flame != null && GameManager.isLostLifeOrLostTransition()) { flame.update(); }
+		
+		if (!GameManager.isLostLifeOrLostTransition()) { 
+			instantiateFlame = false; 
+			flame = null;
+		}
+		
+		handleAnimations();
+		handleSounds();
 	}
 	
-	public void render() {
+	public void render() {	
+		if (flame != null && GameManager.isLostLifeOrLostTransition()) { flame.render(); }
 		Textures.render(selectAnimationFrame(), x, y, Constants.UNITSIZE, Constants.UNITSIZE*2);
 	}
 	
-	protected void handleAnimations() {
-		super.handleAnimations();
+	protected void handleAnimations() {	
+		if (GameManager.isWinTransition()) {
+			reverseAnim = true;
+			isMoving = true;	// so that the animation can be played out
+			animator.setFrames(WFrames);
+		} else if (GameManager.isLostLifeOrLostTransition()) {
+			reverseAnim = true;
+			isMoving = true;	// so that the animation can be played out
+			animator.setFrames(BFrames);
+		} else if (GameManager.isOutOfTimeTransition()) {
+			reverseAnim = false;
+			isMoving = true;	// so that the animation can be played out
+			animator.setFrames(PFrames);
+		} else {
+			// Vertical movement animations take precedence over horizontal movement animations
+			super.handleAnimations();	// put here so that during the transitions, the zero movement animation code will not freeze the winning/dying player animations
+			if (yVelocity < 0) {
+				reverseAnim = true;
+				animator.setFrames(JFrames);
+			} else if (yVelocity > 0) {
+				reverseAnim = true;
+				animator.setFrames(FFrames);
+			} else {	
+				if (!(animator.getCurrentFrames() == WRFrames || animator.getCurrentFrames() == WLFrames) && !isJumping) { // if finished falling
+					reverseAnim = false;
+					animator.setFrames(WRFrames); // default
+				}
 	
-		// Vertical movement animations take precedence over horizontal movement animations
-		if (yVelocity < 0) {
-			reverseAnim = true;
-			animator.setFrames(JFrames);
-		} else if (yVelocity > 0) {
-			reverseAnim = true;
-			animator.setFrames(FFrames);
-		} else {	
-			if (!(animator.getCurrentFrames() == WRFrames || animator.getCurrentFrames() == WLFrames) && !isJumping) { // if finished falling
-				reverseAnim = false;
-				animator.setFrames(WRFrames); // default 
+				if (xVelocity > 0) {
+					reverseAnim = true;
+					animator.setFrames(WRFrames);
+				} else if (xVelocity < 0) {
+					reverseAnim = true;
+					animator.setFrames(WLFrames);
+				} 
 			}
-
-			if (xVelocity > 0) {
-				reverseAnim = true;
-				animator.setFrames(WRFrames);
-			} else if (xVelocity < 0) {
-				reverseAnim = true;
-				animator.setFrames(WLFrames);
-			} 
 		}
+	}
+	
+	protected void handleSounds() {
+		super.handleSounds();
 	}
 
 	public void collideStop(ArrayList<VisibleObject> collidables) {

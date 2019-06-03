@@ -1,6 +1,6 @@
 package game.game_objects.blocks;
 
-import game.Textures;
+import managers.Textures;
 import utilities.Constants;
 
 public class BlockPortal extends Block {

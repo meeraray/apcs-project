@@ -3,17 +3,31 @@ package game;
 import game.game_objects.*;
 import game.game_objects.blocks.*;
 import managers.GameManager;
+import managers.Sounds;
+import managers.Textures;
 import testing.Game;
-import utilities.Constants;
+import utilities.*;
 
 public class ParkourLevel extends Level {
+	protected Cooldown parkourLevelTime;
 	
 	private int playerSpawnX, playerSpawnY;
+	private boolean hurtByLava, playPoisonSound, playBurnSound, playLostSound;
 	
 	public ParkourLevel(boolean pausable) { super(pausable); }
 	
 	public void setup() {		
 		super.setup();
+		
+		outOfTimeTransition = false;
+		hurtByLava = false;
+		playPoisonSound = false;
+		playBurnSound = false;
+		playLostSound = false;
+		
+		Sounds.play(Sounds.screenflip, AudioType.SFX);
+		Sounds.play(Sounds.parkourLevelMusic, AudioType.MUSIC);
+		
 		playerSpawnX = 0;
 		playerSpawnY = Game.HEIGHT / 2 - player.height - 64 + 5;
 		
@@ -40,64 +54,121 @@ public class ParkourLevel extends Level {
 			blocks.add(b);
 			collidables.add(b);
 		}
-		// player.x = (int) (13.5 * 64);
-		// player.y = (int) (-1 * -64 + baseLevel - player.height);
 		BlockEndPortal endportal = new BlockEndPortal(Constants.GAME_WIDTH - 64, (int) (-0.71 * -64 + baseLevel - 128));
 		imgs.add(endportal);
 		blocks.add(endportal);
 		imgs.add(player);
 		
 		for (int i = 0; i < hearts.length; i++) { imgs.add(hearts[i]); }
-	}
-	
-	public void run() {
-		super.run();
+		
+		double time = 10.0 + (int)(Math.random()*21);	// from 10-30 seconds
+		parkourLevelTime = new Cooldown(time);
 	}
 
 	protected void update() {
 		super.update();
 		
-		playerMoveHandling();
-    	player.yVelocity += Constants.GRAVITY;
-    	player.collideStop(collidables);
-    	
+		parkourLevelTime.update();
+		
+		if (parkourLevelTime.isCooldownCompleted() && !lostLifeOrLostTransition && !winTransition) { outOfTimeTransition(); } 
+		
+		if (!Sounds.lava.isPlaying()) { Sounds.play(Sounds.lava, AudioType.SFX); }
+		
     	for(Block b : blocks) {
     		if(b instanceof BlockLava) {
-    			if (player.isColliding(b)) {
-	    			player.x = playerSpawnX;
-	    			player.y = playerSpawnY;
-	    			
-	    			if (player.getLives() > 1) {
-	    				player.setLives(player.getLives()-1); 
-	    			}
-	    			else { 
-	    				remove();
-	    				GameManager.RunScene(4); // lose screen 
-	    			} 
-    			 
+    			if (player.isColliding(b)) {	    			
+    				if (!hurtByLava) { 
+    					player.setLives(player.getLives()-1); 
+    					hurtByLava = true;
+    				}
+    				if (!outOfTimeTransition && !winTransition) { lostLifeOrLoseTransition(); }
 	    			break;
     			} 
     		}
     		if(b instanceof BlockEndPortal && player.isColliding(b)) {
-    			remove();
-    			GameManager.RunScene(3);	// win screen
+    			if (!outOfTimeTransition && !lostLifeOrLostTransition) { winTransition(); }
     		} 
     	}
     	
     	for (int i = 0; i < player.getLives(); i++) { hearts[i].setActive(true); }
+
     	for(VisibleObject o : imgs) { o.update(); }
 	}
 
 	protected void render() {
 		Textures.render(Textures.nether_background);
-		
 		for(VisibleObject o : imgs) { o.render(); }
 	}
 	
-	protected void remove() {
-		imgs.clear();
-		blocks.clear();
-		collidables.clear();
-		player = null;
+	public void clear() {
+		super.clear();
+	}
+	
+	protected void winTransition() {
+		if (!winTransition) {
+			transitionTime.reset();
+			winTransition = true;
+		}
+		
+		if (!playWinSound) { 
+			Sounds.play(Sounds.tada, AudioType.SFX); 
+			playWinSound = true;
+		}
+		
+		if (transitionTime.isCooldownCompleted()) { 
+			winTransition = false;
+			clear();
+			GameManager.RunScene(4);	// win screen
+		}
+	}
+	
+	protected void lostLifeOrLoseTransition() {		
+		if (!lostLifeOrLostTransition) {
+			transitionTime.reset();
+			lostLifeOrLostTransition = true;
+		}
+
+		if (!playBurnSound) { 
+			if (Sounds.landOnBlock.isPlaying()) { Sounds.stopSound(Sounds.landOnBlock); }
+			Sounds.play(Sounds.burn, AudioType.SFX); 
+			playBurnSound = true;
+		}
+		
+		if (transitionTime.isCooldownCompleted()) {
+			if (player.getLives() == 0) {
+				if (!playLostSound) {
+					Sounds.play(Sounds.lost, AudioType.SFX);
+					playLostSound = true;
+				}
+				clear();
+				GameManager.RunScene(5);	// lose screen
+			} else {
+				player.x = playerSpawnX;
+				player.y = playerSpawnY;
+			}
+			
+			lostLifeOrLostTransition = false;
+			hurtByLava = false;
+			playBurnSound = false;
+		}
+	}
+	
+	protected void outOfTimeTransition() {
+		if (!outOfTimeTransition) {
+			transitionTime.reset();
+			outOfTimeTransition = true;
+		}
+		
+		if (!playPoisonSound) {
+			Sounds.play(Sounds.poison, AudioType.SFX);
+			playPoisonSound = true;
+		}
+		
+		if (transitionTime.isCooldownCompleted()) {
+			outOfTimeTransition = false;
+			Sounds.play(Sounds.lost, AudioType.SFX);
+			clear();
+			GameManager.RunScene(6);	// out of time scene
+		}
 	}
 }
