@@ -1,5 +1,5 @@
 # 2D Minecraft Terraria Clone
-This is a 2D Minecraft Terraria Clone obstable game created for our final AP Computer Science A project. We developed this game with Java using the Eclipse IDE, and the Light Weight Java Game Library (see license below). The game features a 2D parkour platformer challenge in the Nether that the player has to complete to return to the Minecraft Overworld.
+This is a 2D Minecraft Terraria Clone obstable game created for our final AP Computer Science A project. We developed this game with Java using the Eclipse IDE and the Light Weight Java Game Library (see license below). The game features a 2D parkour platformer challenge in the Nether that the player has to complete to return to the Minecraft Overworld.
 
 # Lightweight Java Game Library License
 Copyright © 2012-present Lightweight Java Game Library
